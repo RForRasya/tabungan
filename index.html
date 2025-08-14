@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabungan Rasya & Citra</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Updated header with romantic design and new title -->
+        <header class="header">
+            <div class="header-content">
+                <div class="hearts-container">
+                    <i class="fas fa-heart heart-left"></i>
+                    <i class="fas fa-heart heart-right"></i>
+                </div>
+                <h1>Tabungan Rasya & Citra</h1>
+                <p>Mari wujudkan impian bersama, satu langkah pada satu waktu ✨</p>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <!-- Updated summary cards with new styling -->
+            <div class="summary-cards">
+                <div class="card balance-card">
+                    <div class="card-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Saldo Saat Ini</h3>
+                        <p class="amount" id="currentBalance">Rp 0</p>
+                    </div>
+                </div>
+
+                <div class="card income-card">
+                    <div class="card-icon">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Total Pemasukan</h3>
+                        <p class="amount" id="totalIncome">Rp 0</p>
+                    </div>
+                </div>
+
+                <div class="card expense-card">
+                    <div class="card-icon">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Total Pengeluaran</h3>
+                        <p class="amount" id="totalExpense">Rp 0</p>
+                    </div>
+                </div>
+
+                <div class="card target-card">
+                    <div class="card-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Target Tabungan</h3>
+                        <p class="amount" id="savingsTarget">Rp 50,000,000</p>
+                        <div class="progress-bar">
+                            <div class="progress" id="progressBar"></div>
+                        </div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="form-section">
+                    <div class="form-container">
+                        <h2><i class="fas fa-plus-circle"></i> Tambah Transaksi</h2>
+                        <form id="transactionForm">
+                            <div class="form-group">
+                                <label for="type">Jenis Transaksi</label>
+                                <select id="type" required>
+                                    <option value="">Pilih Jenis</option>
+                                    <option value="income">💰 Pemasukan</option>
+                                    <option value="expense">💸 Pengeluaran</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="amount">Jumlah (Rp)</label>
+                                <input type="number" id="amount" placeholder="Masukkan jumlah" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description">Keterangan</label>
+                                <input type="text" id="description" placeholder="Contoh: Gaji bulanan, Beli makan" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="date">Tanggal</label>
+                                <input type="date" id="date" required>
+                            </div>
+
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-plus"></i>
+                                Tambah Transaksi
+                            </button>
+                        </form>
+
+                        <!-- Added savings tips section -->
+                        <div class="tips-section">
+                            <h4>💡 Tips Menabung Bersama:</h4>
+                            <ul>
+                                <li>Sisihkan 20% dari penghasilan</li>
+                                <li>Catat setiap pengeluaran</li>
+                                <li>Rayakan pencapaian kecil</li>
+                                <li>Komunikasi terbuka tentang keuangan</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="transactions-section">
+                    <div class="transactions-header">
+                        <h2><i class="fas fa-history"></i> Riwayat Transaksi</h2>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="all">Semua</button>
+                            <button class="filter-btn" data-filter="income">Pemasukan</button>
+                            <button class="filter-btn" data-filter="expense">Pengeluaran</button>
+                        </div>
+                    </div>
+                    
+                    <div class="transactions-list" id="transactionsList">
+                        <div class="no-transactions">
+                            <i class="fas fa-receipt"></i>
+                            <p>Belum ada transaksi</p>
+                            <small>Mulai tambahkan transaksi pertama!</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Updated target section with better styling -->
+        <div class="target-section">
+            <h2><i class="fas fa-target"></i> Atur Target Tabungan</h2>
+            <p>Tentukan target tabungan yang ingin dicapai bersama</p>
+            <div class="target-form">
+                <input type="number" id="targetAmount" placeholder="Masukkan target (Rp)">
+                <button onclick="setTarget()" class="btn-target">
+                    <i class="fas fa-save"></i>
+                    Simpan Target
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Added success notification container -->
+    <div id="notification-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
