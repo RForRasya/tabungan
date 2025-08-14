@@ -1,5 +1,6 @@
 class RasyaCitraSavings {
   constructor() {
+    this.currentUser = localStorage.getItem("rasyaCitraCurrentUser") || null
     this.transactions = JSON.parse(localStorage.getItem("rasyaCitraTransactions")) || []
     this.savingsTarget = Number.parseFloat(localStorage.getItem("rasyaCitraTarget")) || 50000000
     this.currentFilter = "all"
@@ -8,10 +9,146 @@ class RasyaCitraSavings {
   }
 
   init() {
+    this.checkAuthStatus()
     this.setupEventListeners()
     this.updateDisplay()
     this.renderTransactions()
     this.setTodayDate()
+  }
+
+  checkAuthStatus() {
+    const loginScreen = document.getElementById("loginScreen")
+    const mainApp = document.getElementById("mainApp")
+
+    if (this.currentUser) {
+      // User is logged in, show main app
+      loginScreen.classList.add("hidden")
+      mainApp.classList.remove("hidden")
+      this.updateUserDisplay()
+    } else {
+      // User not logged in, show login screen
+      loginScreen.classList.remove("hidden")
+      mainApp.classList.add("hidden")
+    }
+  }
+
+  login(userName) {
+    this.currentUser = userName
+    localStorage.setItem("rasyaCitraCurrentUser", userName)
+
+    // Show welcome animation
+    this.showWelcomeAnimation(userName)
+
+    // Hide login screen and show main app after animation
+    setTimeout(() => {
+      document.getElementById("loginScreen").classList.add("hidden")
+      document.getElementById("mainApp").classList.remove("hidden")
+      this.updateUserDisplay()
+    }, 4000) // Animation duration
+  }
+
+  logout() {
+    if (confirm("Yakin ingin keluar dari aplikasi?")) {
+      this.currentUser = null
+      localStorage.removeItem("rasyaCitraCurrentUser")
+
+      // Show login screen and hide main app
+      document.getElementById("loginScreen").classList.remove("hidden")
+      document.getElementById("mainApp").classList.add("hidden")
+
+      this.showNotification("👋 Berhasil keluar dari aplikasi!", "success")
+    }
+  }
+
+  updateUserDisplay() {
+    const currentUserElement = document.getElementById("currentUser")
+    if (this.currentUser) {
+      currentUserElement.textContent = this.currentUser
+      this.updatePersonalizedContent()
+    }
+  }
+
+  updatePersonalizedContent() {
+    const user = this.currentUser
+
+    const headerSubtitle = document.getElementById("headerSubtitle")
+    const personalizedSubtitles = {
+      Rasya: "Semangat menabung untuk masa depan yang cerah! 💪",
+      Citra: "Yuk wujudkan impian kita bersama-sama! ✨",
+    }
+    headerSubtitle.textContent =
+      personalizedSubtitles[user] || "Mari wujudkan impian bersama, satu langkah pada satu waktu ✨"
+
+    const formTitle = document.getElementById("formTitle")
+    formTitle.innerHTML = `<i class="fas fa-plus-circle"></i> Tambah Transaksi ${user}`
+
+    const descriptionInput = document.getElementById("description")
+    const personalizedPlaceholders = {
+      Rasya: "Contoh: Gaji Rasya, Beli kopi, Transfer ke Citra",
+      Citra: "Contoh: Gaji Citra, Belanja bulanan, Tabungan bersama",
+    }
+    descriptionInput.placeholder = personalizedPlaceholders[user] || "Contoh: Gaji bulanan, Beli makan"
+
+    const tipsTitle = document.getElementById("tipsTitle")
+    const tipsList = document.getElementById("tipsList")
+
+    const personalizedTips = {
+      Rasya: {
+        title: "💡 Tips Khusus untuk Rasya:",
+        tips: [
+          "Sisihkan 25% dari gaji untuk tabungan bersama",
+          "Catat pengeluaran harian di aplikasi ini",
+          "Diskusikan rencana keuangan dengan Citra",
+          "Rayakan setiap pencapaian target kecil",
+        ],
+      },
+      Citra: {
+        title: "💡 Tips Khusus untuk Citra:",
+        tips: [
+          "Buat budget belanja bulanan yang realistis",
+          "Sisihkan uang receh untuk tabungan darurat",
+          "Komunikasi terbuka dengan Rasya tentang keuangan",
+          "Investasi kecil untuk masa depan bersama",
+        ],
+      },
+    }
+
+    if (personalizedTips[user]) {
+      tipsTitle.textContent = personalizedTips[user].title
+      tipsList.innerHTML = personalizedTips[user].tips.map((tip) => `<li>${tip}</li>`).join("")
+    }
+
+    const targetTitle = document.getElementById("targetTitle")
+    const targetDescription = document.getElementById("targetDescription")
+
+    const personalizedTargets = {
+      Rasya: {
+        title: "🎯 Target Tabungan Rasya",
+        description: "Tentukan target yang ingin kamu capai untuk masa depan bersama Citra",
+      },
+      Citra: {
+        title: "🎯 Target Tabungan Citra",
+        description: "Atur target tabungan yang ingin kita wujudkan bersama Rasya",
+      },
+    }
+
+    if (personalizedTargets[user]) {
+      targetTitle.innerHTML = `<i class="fas fa-target"></i> ${personalizedTargets[user].title}`
+      targetDescription.textContent = personalizedTargets[user].description
+    }
+  }
+
+  showWelcomeAnimation(userName) {
+    const welcomeAnimation = document.getElementById("welcomeAnimation")
+    const welcomeText = document.getElementById("welcomeText")
+
+    welcomeText.textContent = `Selamat Datang, ${userName}!`
+    welcomeAnimation.classList.remove("hidden")
+
+    // Hide animation after 4 seconds
+    setTimeout(() => {
+      welcomeAnimation.classList.add("hidden")
+    }, 4000)
   }
 
   setupEventListeners() {
@@ -67,6 +204,7 @@ class RasyaCitraSavings {
       description,
       date,
       timestamp: new Date().toISOString(),
+      user: this.currentUser,
     }
 
     this.transactions.unshift(transaction)
@@ -76,7 +214,12 @@ class RasyaCitraSavings {
     this.clearForm()
 
     const typeText = type === "income" ? "pemasukan" : "pengeluaran"
-    this.showNotification(`✨ Transaksi ${typeText} berhasil ditambahkan!`, "success")
+    const personalizedMessages = {
+      Rasya: `✨ Keren ${this.currentUser}! Transaksi ${typeText} berhasil ditambahkan!`,
+      Citra: `🎉 Hebat ${this.currentUser}! Transaksi ${typeText} sudah tercatat!`,
+    }
+    const message = personalizedMessages[this.currentUser] || `✨ Transaksi ${typeText} berhasil ditambahkan!`
+    this.showNotification(message, "success")
   }
 
   deleteTransaction(id) {
@@ -130,7 +273,12 @@ class RasyaCitraSavings {
 
   celebrateTarget() {
     const progressText = document.getElementById("progressText")
-    progressText.innerHTML = "🎉 Target Tercapai!"
+    const celebrationMessages = {
+      Rasya: "🎉 Mantap Rasya!",
+      Citra: "🎉 Keren Citra!",
+    }
+    const message = celebrationMessages[this.currentUser] || "🎉 Target Tercapai!"
+    progressText.innerHTML = message
     progressText.style.color = "#16a34a"
     progressText.style.fontWeight = "700"
   }
@@ -162,7 +310,7 @@ class RasyaCitraSavings {
             <div class="transaction-item">
                 <div class="transaction-info">
                     <div class="transaction-description">${transaction.description}</div>
-                    <div class="transaction-date">${this.formatDate(transaction.date)}</div>
+                    <div class="transaction-date">${this.formatDate(transaction.date)}${transaction.user ? ` • ${transaction.user}` : ""}</div>
                 </div>
                 <div class="transaction-amount ${transaction.type}">
                     ${transaction.type === "income" ? "+" : "-"}${this.formatCurrency(transaction.amount)}
@@ -229,6 +377,14 @@ class RasyaCitraSavings {
       }
     }, 3000)
   }
+}
+
+function login(userName) {
+  rasyaCitraSavings.login(userName)
+}
+
+function logout() {
+  rasyaCitraSavings.logout()
 }
 
 function setTarget() {
