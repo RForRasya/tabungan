@@ -9,7 +9,56 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
+    <!-- Added login screen that appears before main app -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="hearts-container">
+                    <i class="fas fa-heart heart-left"></i>
+                    <i class="fas fa-heart heart-right"></i>
+                </div>
+                <h1>Tabungan Rasya & Citra</h1>
+                <p>Pilih nama untuk masuk ke aplikasi tabungan</p>
+            </div>
+            
+            <div class="login-options">
+                <button class="login-btn rasya-btn" onclick="login('Rasya')">
+                    <div class="login-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Rasya</h3>
+                    <p>Masuk sebagai Rasya</p>
+                </button>
+                
+                <button class="login-btn citra-btn" onclick="login('Citra')">
+                    <div class="login-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3>Citra</h3>
+                    <p>Masuk sebagai Citra</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Added welcome animation overlay -->
+    <div id="welcomeAnimation" class="welcome-animation hidden">
+        <div class="welcome-content">
+            <div class="welcome-hearts">
+                <i class="fas fa-heart"></i>
+                <i class="fas fa-heart"></i>
+                <i class="fas fa-heart"></i>
+            </div>
+            <h1 id="welcomeText">Selamat Datang!</h1>
+            <div class="animated-text">
+                <span class="text-line">Semangatttt</span>
+                <span class="text-line">Nabunggggg</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main app container now hidden by default -->
+    <div id="mainApp" class="container hidden">
         <!-- Updated header with romantic design and new title -->
         <header class="header">
             <div class="header-content">
@@ -17,8 +66,15 @@
                     <i class="fas fa-heart heart-left"></i>
                     <i class="fas fa-heart heart-right"></i>
                 </div>
-                <h1>Tabungan Rasya & Citra</h1>
-                <p>Mari wujudkan impian bersama, satu langkah pada satu waktu ✨</p>
+                <!-- Added personalized greeting -->
+                <h1>Tabungan <span id="currentUser">Rasya & Citra</span></h1>
+                <!-- Updated subtitle to be more personalized -->
+                <p id="headerSubtitle">Mari wujudkan impian bersama, satu langkah pada satu waktu ✨</p>
+                <!-- Added logout button -->
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Keluar
+                </button>
             </div>
         </header>
 
@@ -73,7 +129,8 @@
             <div class="main-content">
                 <div class="form-section">
                     <div class="form-container">
-                        <h2><i class="fas fa-plus-circle"></i> Tambah Transaksi</h2>
+                        <!-- Updated form title to be personalized -->
+                        <h2 id="formTitle"><i class="fas fa-plus-circle"></i> Tambah Transaksi</h2>
                         <form id="transactionForm">
                             <div class="form-group">
                                 <label for="type">Jenis Transaksi</label>
@@ -90,6 +147,7 @@
                             </div>
 
                             <div class="form-group">
+                                <!-- Added personalized placeholder -->
                                 <label for="description">Keterangan</label>
                                 <input type="text" id="description" placeholder="Contoh: Gaji bulanan, Beli makan" required>
                             </div>
@@ -105,10 +163,10 @@
                             </button>
                         </form>
 
-                        <!-- Added savings tips section -->
-                        <div class="tips-section">
-                            <h4>💡 Tips Menabung Bersama:</h4>
-                            <ul>
+                        <!-- Updated tips section to be personalized -->
+                        <div class="tips-section" id="tipsSection">
+                            <h4 id="tipsTitle">💡 Tips Menabung Bersama:</h4>
+                            <ul id="tipsList">
                                 <li>Sisihkan 20% dari penghasilan</li>
                                 <li>Catat setiap pengeluaran</li>
                                 <li>Rayakan pencapaian kecil</li>
@@ -139,10 +197,10 @@
             </div>
         </div>
 
-        <!-- Updated target section with better styling -->
+        <!-- Updated target section to be personalized -->
         <div class="target-section">
-            <h2><i class="fas fa-target"></i> Atur Target Tabungan</h2>
-            <p>Tentukan target tabungan yang ingin dicapai bersama</p>
+            <h2 id="targetTitle"><i class="fas fa-target"></i> Atur Target Tabungan</h2>
+            <p id="targetDescription">Tentukan target tabungan yang ingin dicapai bersama</p>
             <div class="target-form">
                 <input type="number" id="targetAmount" placeholder="Masukkan target (Rp)">
                 <button onclick="setTarget()" class="btn-target">
